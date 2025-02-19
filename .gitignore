@@ -1,0 +1,10 @@
+# Binaries
+/bin/
+*.exe
+*.out
+
+# Dependencies
+vendor/
+
+# Config & Secrets
+.env
