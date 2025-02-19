@@ -1,16 +1,35 @@
 package main
 
 import (
-	"github.com/Ken-hkm/go-echo-backend-kenneth/internal/handlers"
+	"context"
+	"log"
+
+	"github.com/aws/aws-lambda-go/events"
+	"github.com/aws/aws-lambda-go/lambda"
+	"github.com/awslabs/aws-lambda-go-api-proxy/echo"
 	"github.com/labstack/echo/v4"
+
+	"github.com/Ken-hkm/go-echo-backend-kenneth/internal/handlers"
 )
 
-func main() {
+var echoLambda *echoadapter.EchoLambda
+
+func init() {
 	e := echo.New()
 
-	// Define routes
+	// Register routes using the handler
 	e.GET("/", handlers.HomeHandler)
 
-	// Start server
-	e.Logger.Fatal(e.Start(":8085"))
+	// Wrap Echo with AWS Lambda adapter
+	echoLambda = echoadapter.New(e)
+}
+
+// Lambda handler function
+func handler(ctx context.Context, req events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
+	return echoLambda.ProxyWithContext(ctx, req)
+}
+
+func main() {
+	log.Println("Starting AWS Lambda with Echo...")
+	lambda.Start(handler)
 }
