@@ -19,7 +19,7 @@ func init() {
 
 	// Register routes using the handler
 	e.GET("/", handlers.HomeHandler)
-
+	e.GET("/personal-info", handlers.PersonalInfoHandler)
 	// Wrap Echo with AWS Lambda adapter
 	echoLambda = echoadapter.New(e)
 }
