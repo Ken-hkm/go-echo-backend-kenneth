@@ -10,5 +10,6 @@ func RegisterRoutes(e *echo.Echo) {
 	// REST API Version 1 group
 	v1 := e.Group("/api/v1")
 	v1.Use(middleware.SecretKeyAuth)
+	v1.Use(middleware.CORSMiddleware)
 	v1.GET("/personal-info", PersonalInfoHandler)
 }
