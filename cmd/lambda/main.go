@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"github.com/Ken-hkm/go-echo-backend-kenneth/internal/db"
 	"log"
 
 	routes "github.com/Ken-hkm/go-echo-backend-kenneth/internal/api"
@@ -15,6 +16,8 @@ var echoLambda *echoadapter.EchoLambda
 
 func init() {
 
+	//conn to Mongo
+	db.ConnectMongoDB()
 	e := echo.New()
 	routes.RegisterRoutes(e)
 
