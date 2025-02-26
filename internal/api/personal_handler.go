@@ -1,21 +1,50 @@
 package api
 
 import (
+	"go.mongodb.org/mongo-driver/bson/primitive"
+	"net/http"
+
+	"github.com/Ken-hkm/go-echo-backend-kenneth/internal/db"
 	"github.com/Ken-hkm/go-echo-backend-kenneth/internal/models"
 	"github.com/labstack/echo/v4"
-	"net/http"
+	"go.mongodb.org/mongo-driver/bson"
 )
 
+//func PersonalInfoHandler(c echo.Context) error {
+//	collection := db.GetCollection("personal-info")
+//	var info models.PersonalInfo
+//
+//	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+//	defer cancel()
+//
+//	// Query the first document in the collection.
+//	err := collection.FindOne(ctx, bson.M{}).Decode(&info)
+//	if err != nil {
+//		return c.JSON(http.StatusNotFound, map[string]string{"error": "Personal info not found"})
+//	}
+//
+//	return c.JSON(http.StatusOK, info)
+//}
+
 func PersonalInfoHandler(c echo.Context) error {
-	info := models.PersonalInfo{
-		FirstName:   "Kenneth",
-		LastName:    "Hakim",
-		Email:       "hakimkenneth@gmail.com",
-		Phone:       "+62-8788-8517-728",
-		Address:     "Jl. Sunter Jaya VI B Blok L No 10, Jakarta Utara",
-		LinkedInURL: "https://www.linkedin.com/in/kenneth-hakim-652b9612b/",
-		GitHubURL:   "https://github.com/Ken-hkm",
+	var info models.PersonalInfo
+
+	objectID, err := primitive.ObjectIDFromHex("67bdc56776af0fdb75bebfba")
+	filter := bson.M{"_id": objectID}
+
+	documents, err := db.GetDocuments("personal-info", filter)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, map[string]string{"error": err.Error()})
 	}
-	// Return the sample information with an HTTP 200 OK status.
+
+	if len(documents) == 0 {
+		return c.JSON(http.StatusNotFound, map[string]string{"message": "Personal info not found"})
+	}
+
+	bsonBytes, _ := bson.Marshal(documents[0])
+	if err := bson.Unmarshal(bsonBytes, &info); err != nil {
+		return c.JSON(http.StatusInternalServerError, map[string]string{"error": "Failed to decode document"})
+	}
+
 	return c.JSON(http.StatusOK, info)
 }
