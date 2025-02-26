@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"github.com/Ken-hkm/go-echo-backend-kenneth/internal/secrets"
+	"go.mongodb.org/mongo-driver/bson"
 	"log"
 	"time"
 
@@ -39,6 +40,23 @@ func ConnectMongoDB() {
 
 // GetCollection returns a MongoDB collection handle.
 func GetCollection(collectionName string) *mongo.Collection {
-	// Replace "online_cv" with your database name
 	return MongoClient.Database("Resume").Collection(collectionName)
+}
+
+// GetDocuments returns a MongoDB Document
+func GetDocuments(collectionName string, filter bson.M) ([]bson.M, error) {
+	collection := MongoClient.Database("Resume").Collection(collectionName)
+
+	// Query the collection
+	cursor, err := collection.Find(context.TODO(), filter)
+	if err != nil {
+		return nil, err // Return error properly
+	}
+	defer cursor.Close(context.TODO()) // Ensure cursor is closed
+
+	var result []bson.M
+	if err := cursor.All(context.TODO(), &result); err != nil {
+		return nil, err
+	}
+	return result, nil // Return the documents
 }
