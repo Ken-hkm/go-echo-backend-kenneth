@@ -1,6 +1,7 @@
 package api
 
 import (
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"net/http"
 
 	"github.com/Ken-hkm/go-echo-backend-kenneth/internal/db"
@@ -27,24 +28,23 @@ import (
 
 func PersonalInfoHandler(c echo.Context) error {
 	var info models.PersonalInfo
-	filter := bson.M{"id": "67bdc56776af0fdb75bebfba"}
+
+	objectID, err := primitive.ObjectIDFromHex("67bdc56776af0fdb75bebfba")
+	filter := bson.M{"_id": objectID}
 
 	documents, err := db.GetDocuments("personal-info", filter)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, map[string]string{"error": err.Error()})
 	}
 
-	// Check if at least one document was found
 	if len(documents) == 0 {
 		return c.JSON(http.StatusNotFound, map[string]string{"message": "Personal info not found"})
 	}
 
-	// Convert BSON document into `models.PersonalInfo`
 	bsonBytes, _ := bson.Marshal(documents[0])
 	if err := bson.Unmarshal(bsonBytes, &info); err != nil {
 		return c.JSON(http.StatusInternalServerError, map[string]string{"error": "Failed to decode document"})
 	}
 
-	// Return JSON response
 	return c.JSON(http.StatusOK, info)
 }
