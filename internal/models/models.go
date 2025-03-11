@@ -9,6 +9,8 @@ type PersonalInfo struct {
 	Email       string             `bson:"email" json:"email"`
 	Phone       string             `bson:"phone" json:"phone"`
 	Address     string             `bson:"address" json:"address"`
-	LinkedInURL string             `bson:"linkedin_url" json:"linkedin_url"`
-	GitHubURL   string             `bson:"github_url" json:"github_url"`
+	Title       string             `bson:"title" json:"title"`
+	LinkedInURL string             `bson:"linkedin_url" json:"linkedinUrl"`
+	GitHubURL   string             `bson:"github_url" json:"githubUrl"`
+	AboutMe     string             `bson:"about_me" json:"aboutMe"`
 }
