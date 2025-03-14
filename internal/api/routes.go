@@ -1,6 +1,7 @@
 package api
 
 import (
+	"github.com/Ken-hkm/go-echo-backend-kenneth/internal/handlers"
 	"github.com/Ken-hkm/go-echo-backend-kenneth/internal/middleware"
 	"github.com/labstack/echo/v4"
 )
@@ -11,5 +12,6 @@ func RegisterRoutes(e *echo.Echo) {
 	v1 := e.Group("/api/v1")
 	v1.Use(middleware.SecretKeyAuth)
 	v1.Use(middleware.CORSMiddleware)
-	v1.GET("/personal-info", PersonalInfoHandler)
+	v1.GET("/personal-info", handlers.PersonalInfoHandler)
+	v1.GET("/experience", handlers.ExperienceHandler)
 }
