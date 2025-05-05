@@ -14,4 +14,5 @@ func RegisterRoutes(e *echo.Echo) {
 	v1.Use(middleware.CORSMiddleware)
 	v1.GET("/personal-info", handlers.PersonalInfoHandler)
 	v1.GET("/experience", handlers.ExperienceHandler)
+	v1.GET("/expertise", handlers.ExpertiseHandler)
 }
